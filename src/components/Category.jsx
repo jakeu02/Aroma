@@ -10,7 +10,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-coverflow';
 
 
-import Video from '../assets/banner_video.mp4'
+import Video from '../Aroma/banner_video.mp4'
 import Cawfee from '../assets/coffee.png'
 
 import Cappuccino from '../assets/categories/hot_cappuccino.png'
