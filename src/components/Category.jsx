@@ -249,7 +249,7 @@ const Category = () => {
           <h2 className="text-white text-3xl font-bold tracking-widest flex items-center justify-center gap-3">
             <span className="text-4xl"><img src={Cawfee} alt='image' className='w-16' /></span>
             COFFEE
-            <span className="text-5xl">☕</span>
+            <span className="text-4xl"><img src={Cawfee} alt='image' className='w-16' /></span>
           </h2>
         </div>
         
