@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: "/aroma/", // ⚠️ Replace with your repo name
+  base: "/Aroma/", // ⚠️ Replace with your repo name
 });
