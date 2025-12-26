@@ -216,7 +216,7 @@ const Category = () => {
     muted
     playsInline
   >
-    <source src={Video} type="video/mp4" />
+    <source src='https://drive.google.com/file/d/1SdDixosGDGZQ8bcEKTzBspKLKWpfMdmk/view?usp=sharing' type="video/mp4" />
   </video>
 
   {/* Dark overlay (optional for better text visibility) */}
