@@ -1,10 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Star, X } from 'lucide-react';
+import { Star, X, MessageSquarePlus, Send } from 'lucide-react';
+import { reviews as defaultReviews } from '../data/reviews';
+import toast from 'react-hot-toast';
 
 export default function Ratings() {
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredReview, setHoveredReview] = useState(null);
   const [zoomedImage, setZoomedImage] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showUserReviews, setShowUserReviews] = useState(false);
+  const [userReviews, setUserReviews] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('aroma-reviews')) || [];
+    } catch { return []; }
+  });
+  const [reviewForm, setReviewForm] = useState({ username: '', review: '', rating: 0 });
+  const [hoverRating, setHoverRating] = useState(0);
+
+  const reviews = defaultReviews;
+
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    if (!reviewForm.username || !reviewForm.review || reviewForm.rating === 0) {
+      toast.error('Please fill in all fields and select a rating');
+      return;
+    }
+    const newReview = {
+      id: Date.now(),
+      username: reviewForm.username.startsWith('@') ? reviewForm.username : `@${reviewForm.username}`,
+      date: new Date().toLocaleDateString('en-US'),
+      image: '',
+      review: `"${reviewForm.review}"`,
+      capturedBy: reviewForm.username.replace('@', ''),
+      rating: reviewForm.rating,
+    };
+    const updated = [newReview, ...userReviews];
+    setUserReviews(updated);
+    localStorage.setItem('aroma-reviews', JSON.stringify(updated));
+    setReviewForm({ username: '', review: '', rating: 0 });
+    setShowReviewForm(false);
+    setShowUserReviews(true);
+    toast.success('Review submitted! Thank you for your feedback.', {
+      icon: '\u2B50',
+      style: { background: '#422006', color: '#fde68a', border: '1px solid #92400e' },
+    });
+  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -22,56 +62,9 @@ export default function Ratings() {
     };
   }, [zoomedImage]);
 
-  const reviews = [
-    {
-      id: 1,
-      username: '@time_if',
-      date: '11/12/2025',
-      image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop',
-      review: '"I really love being here! There\'s a lot of delicious pastry\'s and super aroma coffee."',
-      capturedBy: 'Christine Devi Cruz',
-      rating: 5
-    },
-    {
-      id: 2,
-      username: '@sherlxvur',
-      date: '11/12/2025',
-      image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop',
-      review: '"Can\'t get over the cozy lights, warm pastries, and that heavenly coffee aroma."',
-      capturedBy: 'Yuri Valdez',
-      rating: 5
-    },
-    {
-      id: 3,
-      username: '@kxsie_u',
-      date: '11/12/2025',
-      image: 'https://images.unsplash.com/photo-1511081692775-05d0f180a065?w=400&h=300&fit=crop',
-      review: '"If comfort and creativity had a smell, it would be this coffee shop."',
-      capturedBy: 'Mark Cruz',
-      rating: 5
-    },
-    {
-      id: 4,
-      username: '@Jasminnwel',
-      date: '11/12/2025',
-      image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=400&h=300&fit=crop',
-      review: '"This place feels like a hug in cafe form — soft music, pretty interiors, and the best latte ever."',
-      capturedBy: 'Jasmin Yu',
-      rating: 5
-    },
-    {
-      id: 5,
-      username: '@KristenGuel',
-      date: '11/12/2025',
-      image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop',
-      review: '"Soft music, gentle lighting, and a cup that feels like peace — my kind of therapy. ☕✨"',
-      capturedBy: 'Kirsten Wendhandt',
-      rating: 5
-    }
-  ];
 
   return (
-    <div className="min-h-screen bg-categorybg py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="bg-categorybg py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <style>{`
         @keyframes shimmer {
           0% { background-position: -1000px 0; }
@@ -240,7 +233,7 @@ export default function Ratings() {
             {[reviews[0], reviews[1], reviews[2]].map((review, idx) => (
               <div
                 key={review.id}
-                className={`bg-cardbg backdrop-blur-sm rounded-lg overflow-hidden border border-amber-800/30 hover-lift ${
+                className={`bg-[#3D2B1F] backdrop-blur-sm rounded-lg overflow-hidden border border-amber-800/30 hover-lift ${
                   isVisible ? 'animate-slide-in-left opacity-100' : 'opacity-0'
                 }`}
                 style={{ animationDelay: `${idx * 150}ms` }}
@@ -329,7 +322,7 @@ export default function Ratings() {
             {[reviews[3], reviews[4]].map((review, idx) => (
               <div
                 key={review.id}
-                className={`bg-cardbg backdrop-blur-sm rounded-lg overflow-hidden border border-amber-800/30 hover-lift ${
+                className={`bg-[#3D2B1F] backdrop-blur-sm rounded-lg overflow-hidden border border-amber-800/30 hover-lift ${
                   isVisible ? 'animate-slide-in-right opacity-100' : 'opacity-0'
                 }`}
                 style={{ animationDelay: `${idx * 150 + 300}ms` }}
@@ -416,12 +409,122 @@ export default function Ratings() {
             <div className={`flex justify-end pt-4 transition-all duration-1000 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
             }`} style={{ transitionDelay: '800ms' }}>
-              <button className="text-white hover:text-amber-200 font-medium text-base italic transition-all duration-300 hover:tracking-wider relative group">
-                <span className="relative z-10">View more reviews</span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300"></span>
-              </button>
+              {userReviews.length > 0 && (
+                <button
+                  onClick={() => setShowUserReviews(!showUserReviews)}
+                  className="text-white hover:text-amber-200 font-medium text-base italic transition-all duration-300 hover:tracking-wider relative group"
+                >
+                  <span className="relative z-10">
+                    {showUserReviews ? 'Hide' : 'View more'} reviews ({userReviews.length})
+                  </span>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-400 group-hover:w-full transition-all duration-300"></span>
+                </button>
+              )}
             </div>
           </div>
+        </div>
+
+        {/* User-Submitted Reviews */}
+        {showUserReviews && userReviews.length > 0 && (
+          <div className="mt-8 space-y-4">
+            <h3 className="text-amber-200 text-lg font-semibold tracking-wide">Community Reviews</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userReviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="bg-[#3D2B1F] backdrop-blur-sm rounded-lg p-4 border border-amber-800/30 hover-lift animate-slide-in-left"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-amber-200 text-sm font-medium">{review.username}</span>
+                    <span className="text-amber-400/80 text-xs">{review.date}</span>
+                  </div>
+                  <p className="text-amber-100/90 text-sm leading-relaxed mb-3 italic">{review.review}</p>
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3 h-3 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-amber-700'}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Write a Review Section */}
+        <div className="mt-10 flex flex-col items-center">
+          {!showReviewForm ? (
+            <button
+              onClick={() => setShowReviewForm(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-amber-500/30"
+            >
+              <MessageSquarePlus className="w-5 h-5" />
+              Write a Review
+            </button>
+          ) : (
+            <div className="w-full max-w-lg bg-[#3D2B1F] backdrop-blur-sm rounded-lg p-6 border border-amber-800/30 animate-slide-in-left">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-white text-lg font-bold">Share Your Experience</h3>
+                <button onClick={() => setShowReviewForm(false)} className="text-amber-400 hover:text-white transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleSubmitReview} className="space-y-4">
+                <div>
+                  <label className="text-amber-300 text-sm font-semibold block mb-2">Username</label>
+                  <input
+                    type="text"
+                    value={reviewForm.username}
+                    onChange={(e) => setReviewForm(prev => ({ ...prev, username: e.target.value }))}
+                    placeholder="@yourusername"
+                    className="w-full px-4 py-3 bg-amber-950/40 border border-amber-700/50 rounded-xl text-white placeholder-amber-400/40 focus:outline-none focus:border-amber-500 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-amber-300 text-sm font-semibold block mb-2">Your Rating</label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
+                        className="transition-transform hover:scale-125"
+                      >
+                        <Star
+                          className={`w-7 h-7 transition-colors ${
+                            star <= (hoverRating || reviewForm.rating)
+                              ? 'fill-yellow-400 text-yellow-400'
+                              : 'text-amber-700'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-amber-300 text-sm font-semibold block mb-2">Your Review</label>
+                  <textarea
+                    value={reviewForm.review}
+                    onChange={(e) => setReviewForm(prev => ({ ...prev, review: e.target.value }))}
+                    placeholder="Tell us about your experience..."
+                    rows={3}
+                    className="w-full px-4 py-3 bg-amber-950/40 border border-amber-700/50 rounded-xl text-white placeholder-amber-400/40 focus:outline-none focus:border-amber-500 transition-all resize-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 rounded-full transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg"
+                >
+                  <Send className="w-4 h-4" />
+                  Submit Review
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

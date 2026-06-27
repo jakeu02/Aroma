@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import image from '../assets/header_image.png';
 function Header() {
   return (
@@ -17,9 +18,9 @@ function Header() {
             <p className="font-pop text-md sm:text-base lg:text-xl text-white/95 mb-6 sm:mb-8 font-light italic">
               Feel the aroma. Experience the taste and soul of coffee
             </p>
-            <button className="bg-[#FDB022] hover:bg-[#F5A623] text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-lg">
+            <Link to="/menu" className="inline-block bg-[#FDB022] hover:bg-[#F5A623] text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-lg">
               Get your coffee
-            </button>
+            </Link>
           </div>
         </div>
       </section>

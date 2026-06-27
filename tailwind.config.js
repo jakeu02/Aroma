@@ -7,17 +7,20 @@ export default {
   theme: {
     extend: {
       fontFamily:{
+        // Default body font across the whole app.
+        sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Elegant serif for big titles — gives the "artisan cafe" feel.
+        display: ['Fraunces', 'Georgia', 'serif'],
         mont: ['Montserrat', 'sans-serif'],
         pop: ['Poppins', 'sans-serif'],
         ooohbaby: ['"Oooh Baby"', "cursive"],
         baloo: ['"Baloo 2"', 'cursive'],
       },
       colors: {
-        background: '#FFF6F1',
-        categorybg: '#312214',
-        cardbg: '#553E28',
-        categbg: '#442F1B',
-       
+        background: '#F5E0CC',
+        categorybg: '#1A120B',
+        cardbg: '#FFF8F0',
+        categbg: '#EDD6C0',
     },
     },
   },
